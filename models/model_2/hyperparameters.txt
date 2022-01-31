@@ -1,0 +1,30 @@
+{
+    "ARCHITECTURE_NAME": "architecture_v1",
+    "SEED": 1,
+    "MAX_NUM_EPOCHS": 50,
+    "CHANNELS": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+    ],
+    "LEARNING_RATE": 0.0001,
+    "DECAY_RATE": 0.00001,
+    "STOP_STRIP": 7,
+    "DEVICE": "cuda",
+    "BATCH_SIZE": 2,
+    "NUM_WORKERS": 2,
+    "PIN_MEMORY": true,
+    "LINEAR": true,
+    "Z_NORM": true,
+    "TRANSFORMS": ["MagScale", "RandShuffle"]
+}
