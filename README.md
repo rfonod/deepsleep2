@@ -30,10 +30,10 @@ pip3 install -r requirements.txt
 ```
 4. If you plan to use GPU computations (recommended), install [CUDA](https://developer.nvidia.com/cuda-downloads)
 
-**Step 2: Hyperparameters**
+**STEP 2: Hyperparameters**
  
 A correctly set up `hyperparameters.txt` file must be present in a subdirectory of `./models`. The subdirectory name is specified in the `MODEL_NAME` variable.
 
-**Step 3: Notebook File**
+**STEP 3: Notebook File**
 
 Run the cells of [`deep_sleep2.ipynb`](deep_sleep2.ipynb) in a sequential order. Consider the description of the **Main Switches** section.
