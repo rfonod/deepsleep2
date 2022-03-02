@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Fonod
+    given-names: Robert
+    orcid: https://orcid.org/0000-0002-9434-3156
+title: "DeepSleep 2.0: Automated Sleep Arousal Segmentation via Deep Learning"
+version: 1.0.0
+doi: 10.3390/ai3010010
+date-released: 2022-03-01
+url: "https://github.com/rfonod/deepsleep2"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Fonod"
+    given-names: "Robert"
+    orcid: "https://orcid.org/0000-0002-9434-3156"
+  doi: "10.3390/ai3010010"
+  journal: "AI"
+  month: 3
+  start: 164
+  end: 179
+  title: "DeepSleep 2.0: Automated Sleep Arousal Segmentation via Deep Learning"
+  issue: 1
+  volume: 3
+  year: 2022
