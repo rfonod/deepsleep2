@@ -1,3 +1,5 @@
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/deepsleep-2-0-automated-sleep-arousal/sleep-arousal-detection-on-you-snooze-you-win)](https://paperswithcode.com/sota/sleep-arousal-detection-on-you-snooze-you-win?p=deepsleep-2-0-automated-sleep-arousal)
+
 ## DeepSleep 2.0: Automated Sleep Arousal Segmentation via Deep Learning
 
 A 300-second example of a 13-channel physiological recording and the corresponding sleep arousal prediction/target labels.
