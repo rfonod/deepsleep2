@@ -1,4 +1,8 @@
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/deepsleep-2-0-automated-sleep-arousal/sleep-arousal-detection-on-you-snooze-you-win)](https://paperswithcode.com/sota/sleep-arousal-detection-on-you-snooze-you-win?p=deepsleep-2-0-automated-sleep-arousal)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13964322.svg)](https://doi.org/10.5281/zenodo.13964322)
+![GitHub Release](https://img.shields.io/github/v/release/rfonod/deepsleep2?include_prereleases) 
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 ![Jupyter Notebook](https://img.shields.io/badge/jupyter-%23FA0F00.svg?style=for-the-badge&logo=jupyter&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)
 
