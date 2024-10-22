@@ -6,7 +6,7 @@ authors:
     orcid: https://orcid.org/0000-0002-9434-3156
 title: "DeepSleep 2.0: Automated Sleep Arousal Segmentation via Deep Learning"
 version: 1.0.0
-doi: 10.3390/ai3010010
+doi: 10.5281/zenodo.13964322
 date-released: 2022-03-01
 url: "https://github.com/rfonod/deepsleep2"
 preferred-citation:
