@@ -1,0 +1,48 @@
+{
+    "title": "DeepSleep 2.0: Automated Sleep Arousal Segmentation via Deep Learning",
+    "version": "1.0.1",
+    "description": "A compact, U-Net-inspired 1D fully convolutional neural network (740,551 trainable parameters) that predicts non-apnea sleep arousals from full-length, multi-channel polysomnographic (PSG) recordings at 5-millisecond resolution. Reference implementation, pretrained models, and evaluation code for the paper published in AI (MDPI), 3(1), 164-179.",
+    "upload_type": "software",
+    "license": "MIT",
+    "access_right": "open",
+    "creators": [
+        {
+            "name": "Fonod, Robert",
+            "orcid": "0000-0002-9434-3156"
+        }
+    ],
+    "keywords": [
+        "machine-learning",
+        "deep-learning",
+        "time-series",
+        "cnn",
+        "pytorch",
+        "neural-networks",
+        "segmentation",
+        "convolutional-networks",
+        "physionet",
+        "multichannel",
+        "encoder-decoder",
+        "sleep-analysis",
+        "u-net",
+        "medical-ai",
+        "polysomnography",
+        "computational-efficiency",
+        "sleep-apnea",
+        "sleep-arousals"
+    ],
+    "related_identifiers": [
+        {
+            "identifier": "10.3390/ai3010010",
+            "relation": "isSupplementTo",
+            "resource_type": "publication-article",
+            "scheme": "doi"
+        },
+        {
+            "identifier": "https://github.com/rfonod/deepsleep2",
+            "relation": "isSupplementTo",
+            "resource_type": "software",
+            "scheme": "url"
+        }
+    ]
+}
