@@ -1,48 +1,59 @@
 {
-    "title": "DeepSleep 2.0: Automated Sleep Arousal Segmentation via Deep Learning",
-    "version": "1.0.1",
-    "description": "A compact, U-Net-inspired 1D fully convolutional neural network (740,551 trainable parameters) that predicts non-apnea sleep arousals from full-length, multi-channel polysomnographic (PSG) recordings at 5-millisecond resolution. Reference implementation, pretrained models, and evaluation code for the paper published in AI (MDPI), 3(1), 164-179.",
-    "upload_type": "software",
-    "license": "MIT",
-    "access_right": "open",
-    "creators": [
-        {
-            "name": "Fonod, Robert",
-            "orcid": "0000-0002-9434-3156"
-        }
-    ],
-    "keywords": [
-        "machine-learning",
-        "deep-learning",
-        "time-series",
-        "cnn",
-        "pytorch",
-        "neural-networks",
-        "segmentation",
-        "convolutional-networks",
-        "physionet",
-        "multichannel",
-        "encoder-decoder",
-        "sleep-analysis",
-        "u-net",
-        "medical-ai",
-        "polysomnography",
-        "computational-efficiency",
-        "sleep-apnea",
-        "sleep-arousals"
-    ],
-    "related_identifiers": [
-        {
-            "identifier": "10.3390/ai3010010",
-            "relation": "isSupplementTo",
-            "resource_type": "publication-article",
-            "scheme": "doi"
-        },
-        {
-            "identifier": "https://github.com/rfonod/deepsleep2",
-            "relation": "isSupplementTo",
-            "resource_type": "software",
-            "scheme": "url"
-        }
-    ]
+  "title": "DeepSleep 2.0: Automated Sleep Arousal Segmentation via Deep Learning",
+  "upload_type": "software",
+  "version": "1.0.1",
+  "description": "<p><a href=\"https://github.com/rfonod/deepsleep2\"><strong>DeepSleep 2.0</strong></a> is a compact, U-Net-inspired 1D fully convolutional network that segments non-apnea sleep arousals from full-length, multi-channel polysomnographic (PSG) recordings at native 5-millisecond resolution. With only <strong>740,551 trainable parameters</strong>, it is a lightweight successor to <a href=\"https://www.nature.com/articles/s42003-020-01542-8\">DeepSleep</a>, the network that achieved the highest unofficial score in the <a href=\"https://physionet.org/content/challenge-2018/1.0.0/\">2018 PhysioNet/CinC Challenge</a>, reaching comparable accuracy at a fraction of the depth, memory, and compute. Full details are in the open-access paper published in <em>AI</em> (MDPI, 2022).</p>\n<p>&#128204; <strong>Important:</strong> If you use this code in your research, please cite the associated article:</p>\n<blockquote>\n<p><strong>Robert Fonod</strong> (2022). <em>DeepSleep 2.0: Automated Sleep Arousal Segmentation via Deep Learning</em>, AI, 3(1), 164-179. DOI: <a href=\"https://doi.org/10.3390/ai3010010\">10.3390/ai3010010</a></p>\n</blockquote>\n<h2>Overview</h2>\n<p>Sleep arousals are brief intrusions of wakefulness that fragment sleep. Detecting them from PSG is laborious to do by hand and highly imbalanced, as arousals are sparse. DeepSleep 2.0 casts this as a dense, per-sample segmentation problem: it consumes an entire night of raw multi-channel signal and outputs an arousal probability for every 5 ms time step in a single forward pass, with no windowing or patching at inference.</p>\n<h2>Key Features</h2>\n<ul>\n<li>&#129706; <strong>Compact</strong>: a 5-level encoder/decoder with just 740,551 parameters (vs. 11 levels in the original DeepSleep).</li>\n<li>&#127754; <strong>Full-length input</strong>: processes complete raw PSG recordings end-to-end, padded and centered to 2^23 (8,388,608) samples.</li>\n<li>&#9201;&#65039; <strong>Native 5 ms resolution</strong>: one prediction per input sample at 200 Hz, no post-hoc upsampling.</li>\n<li>&#127898;&#65039; <strong>Aggressive multi-scale pooling</strong>: downsampling factors of 4, 8, 16, 32 keep the network shallow yet wide in receptive field.</li>\n<li>&#127917; <strong>Masked BCE loss</strong>: unscored regions of the recording are excluded from the objective.</li>\n<li>&#128202; <strong>AUPRC-first evaluation</strong>: the primary metric for this heavily imbalanced task, scored with the official PhysioNet scoring script.</li>\n<li>&#129514; <strong>Signal-space augmentations</strong>: magnitude scaling, related-channel shuffling, and Gaussian channel injection, applied on-the-fly during training.</li>\n</ul>\n<h2>Architecture</h2>\n<p>The network is a 1D adaptation of the classic 2D U-Net. Each DoubleConv block stacks two Conv1d layers (kernel size 7, padding 3, no bias), each followed by batch normalization and ReLU. The encoder begins with an input convolution (13 to 15 channels) and adds four downsampling blocks that progressively widen the representation (15, 30, 60, 120, 240) while pooling by 4, 8, 16, and 32. A symmetric decoder upsamples, concatenates the encoder skip connections, and applies DoubleConv blocks, ending in a 1x1 output convolution with a sigmoid applied at scoring time. Compared to the original DeepSleep (depth 11, 480-channel bottleneck), DeepSleep 2.0 halves the depth and quarters the bottleneck width, trading a modest accuracy drop for a much lighter, faster model.</p>\n<h2>Dataset</h2>\n<p>The model is trained and evaluated on the PhysioNet/CinC 2018 Challenge \"You Snooze You Win\" dataset: 994 annotated training recordings and 989 hidden-test recordings, each roughly 7 to 8 hours long, sampled at 200 Hz. Each recording provides 13 physiological channels: six-channel EEG, one EOG, chin EMG, abdominal and chest respiratory effort, airflow, oxygen saturation (SaO2), and single-lead ECG. Per-sample labels mark arousal, non-arousal, and unscored regions, the last of which are masked from the loss.</p>\n<h2>Results</h2>\n<p>Evaluated on a held-out test set of 249 recordings using the official PhysioNet gross AUPRC (area under the precision-recall curve) and gross AUROC. For this highly imbalanced task, AUPRC is the headline metric.</p>\n<table>\n<thead><tr><th>Model</th><th>Z-norm</th><th>Augmentations</th><th>Gross AUPRC</th><th>Gross AUROC</th></tr></thead>\n<tbody>\n<tr><td>model_0</td><td>No</td><td>MagScale</td><td>0.3879</td><td>0.8789</td></tr>\n<tr><td>model_1</td><td>Yes</td><td>MagScale</td><td>0.4437</td><td>0.8944</td></tr>\n<tr><td><strong>model_2 (best)</strong></td><td>Yes</td><td>MagScale + RandShuffle</td><td><strong>0.4504</strong></td><td><strong>0.9012</strong></td></tr>\n<tr><td>model_3</td><td>Yes</td><td>MagScale + RandShuffle + Gaussian</td><td>0.4071</td><td>0.8951</td></tr>\n<tr><td><em>DeepSleep (reference, ensemble)</em></td><td>n/a</td><td>n/a</td><td><em>0.550</em></td><td><em>0.927</em></td></tr>\n</tbody>\n</table>\n<p>The best configuration (model_2) reaches 0.4504 AUPRC and 0.9012 AUROC, close to the far larger original DeepSleep ensemble, while remaining compact. Z-score normalization and related-channel shuffling both help; the Gaussian channel-injection augmentation did not improve over channel-shuffling alone.</p>\n<h2>Citation</h2>\n<pre><code>@Article{Fon22a,\n  author    = {Fonod, Robert},\n  title     = {{DeepSleep 2.0: Automated Sleep Arousal Segmentation via Deep Learning}},\n  journal   = {AI},\n  year      = {2022},\n  volume    = {3},\n  number    = {1},\n  pages     = {164-179},\n  doi       = {10.3390/ai3010010},\n  publisher = {MDPI}\n}</code></pre>\n<p>Please also consider citing the original <a href=\"https://www.nature.com/articles/s42003-020-01542-8\">DeepSleep</a> paper.</p>\n<h2>License</h2>\n<p>This project is distributed under the MIT License.</p>\n<h2>Full Changelog</h2>\n<p><a href=\"https://github.com/rfonod/deepsleep2/compare/v1.0.0...v1.0.1\">https://github.com/rfonod/deepsleep2/compare/v1.0.0...v1.0.1</a></p>",
+  "creators": [
+    {
+      "name": "Fonod, Robert",
+      "affiliation": "University of Illinois Urbana-Champaign",
+      "orcid": "0000-0002-9434-3156"
+    }
+  ],
+  "license": "MIT",
+  "access_right": "open",
+  "language": "eng",
+  "keywords": [
+    "Sleep Arousal Detection",
+    "Sleep Arousal Segmentation",
+    "Sleep Analysis",
+    "Polysomnography",
+    "Sleep Apnea",
+    "PhysioNet",
+    "Time Series Segmentation",
+    "Deep Learning",
+    "Machine Learning",
+    "Convolutional Neural Network",
+    "Fully Convolutional Network",
+    "U-Net",
+    "Encoder-Decoder",
+    "PyTorch",
+    "Neural Networks",
+    "Biomedical Signal Processing",
+    "Physiological Signals",
+    "Multichannel",
+    "EEG",
+    "Medical AI",
+    "Computational Efficiency"
+  ],
+  "dates": [
+    {
+      "start": "2026-07-09",
+      "end": "2026-07-09",
+      "type": "updated",
+      "description": "Updated from v1.0.0 to v1.0.1"
+    }
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/rfonod/deepsleep2/tree/v1.0.1",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "10.3390/ai3010010",
+      "relation": "isDescribedBy",
+      "resource_type": "publication-article"
+    }
+  ]
 }
