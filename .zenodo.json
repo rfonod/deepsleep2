@@ -55,5 +55,11 @@
       "relation": "isDescribedBy",
       "resource_type": "publication-article"
     }
+  ],
+  "alternate_identifiers": [
+    {
+      "identifier": "10.3390/ai3010010",
+      "scheme": "doi"
+    }
   ]
 }
