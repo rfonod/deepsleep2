@@ -123,12 +123,12 @@ python -m venv .venv && source .venv/bin/activate   # or use conda
 pip install -r requirements.txt
 ```
 
-A CUDA-capable GPU is strongly recommended for training (inference also runs on CPU). Install a [CUDA-enabled PyTorch build](https://pytorch.org/get-started/locally/) to use the GPU.
+The clone is about 0.9 GB because the per-epoch checkpoints of all four pretrained models are part of the repository. A CUDA-capable GPU is strongly recommended for training (inference also runs on CPU). Install a [CUDA-enabled PyTorch build](https://pytorch.org/get-started/locally/) to use the GPU.
 
 <details>
 <summary><b>🕰️ Reproduce the exact paper environment</b></summary>
 
-The published results were produced with Python 3.8 and PyTorch 1.9. To recreate that environment bit-for-bit:
+The published results were produced with Python 3.8 and PyTorch 1.9. To recreate that environment with the exact pinned package versions:
 
 ```bash
 pip install -r requirements-legacy.txt
