@@ -9,7 +9,7 @@
 🎬 A 300-second window of a 13-channel PSG recording with the model's predicted arousal probability (red) overlaid on the ground-truth labels (black).
 
 > [!NOTE]
-> Running the code requires the ~135 GB PhysioNet/CinC 2018 Challenge dataset. See [`data/README.md`](data/README.md) for download instructions. The repository ships with pretrained model checkpoints, so you can inspect results without the raw data.
+> Training (or re-scoring) requires the ~135 GB PhysioNet/CinC 2018 Challenge `training` folder. See [`data/README.md`](data/README.md) for download instructions. The repository ships with pretrained checkpoints and cached test scores, so you can reproduce the results table below **without the dataset and without a GPU**.
 
 ## Overview
 
@@ -43,7 +43,7 @@ Compared to the original DeepSleep (depth 11, 480-channel bottleneck), DeepSleep
 
 ## Dataset
 
-The model is trained and evaluated on the [PhysioNet/CinC 2018 Challenge](https://physionet.org/content/challenge-2018/1.0.0/) *"You Snooze You Win"* dataset: **994** annotated training recordings and **989** hidden-test recordings, each roughly 7 to 8 hours long, sampled at **200 Hz**. Each recording provides **13 physiological channels**:
+The model is trained and evaluated on the [PhysioNet/CinC 2018 Challenge](https://physionet.org/content/challenge-2018/1.0.0/) *"You Snooze You Win"* dataset: **994** annotated training recordings (plus **989** test recordings whose labels are not public, so they are not used here), each roughly 7 to 8 hours long, sampled at **200 Hz**. Each recording provides **13 physiological channels**:
 
 | # | Channel | Modality |
 |---|---------|----------|
@@ -102,7 +102,7 @@ The best configuration (`model_2`) reaches **0.4504 AUPRC / 0.9012 AUROC**, clos
 
 ## Pretrained Models
 
-Four trained configurations ship under [`models/`](models). Each folder contains the `hyperparameters.txt` config, per-epoch `my_checkpoint_<n>.pth.tar` checkpoints, the `records.csv` test split, and cached `test_loss_*` / `test_score_*` pickles.
+Four trained configurations ship under [`models/`](models). Each folder contains the `hyperparameters.txt` config, per-epoch `my_checkpoint_<n>.pth.tar` checkpoints (the latest one also stores the full training/validation loss history), the `records.csv` train/validation/test split, and cached `test_loss_<epoch>` / `test_score_<epoch>` pickles for the best epoch.
 
 | Config | Z-norm | Augmentations | Best epoch | AUPRC | AUROC |
 |--------|:------:|---------------|:----------:|:-----:|:-----:|
@@ -140,22 +140,44 @@ The notebook is backward-compatible: an AMP compatibility shim automatically use
 
 ## Usage
 
-Everything runs through the [`deep_sleep2.ipynb`](deep_sleep2.ipynb) notebook. Open it and set the **Main Switches** at the top:
+Everything runs through the [`deep_sleep2.ipynb`](deep_sleep2.ipynb) notebook, executed top-to-bottom. Set the **Main Switches** in the first code cell:
 
 ```python
-MODEL_NAME     = 'model_2'   # which config under ./models to use: model_0 .. model_3
-TRAIN_MODE     = True        # True = train; False = inference / evaluation only
-LOAD_CHECKPOINT = False      # resume from the latest checkpoint in the model folder
+MODEL_NAME      = 'model_2'  # which config under ./models to use: model_0 .. model_3
+TRAIN_MODE      = True       # True = train; False = evaluate the existing checkpoints
+LOAD_CHECKPOINT = False      # training only: resume from the latest checkpoint
 ```
 
-Then run the cells top-to-bottom. The notebook will:
+### Evaluate a pretrained model (no dataset, no GPU needed)
 
-1. Build `RECORDS.txt` manifests and preprocess/cache the PSG signals to `.h5py`.
-2. Split the data (60% train / 15% val / 25% test when only the training folder is present).
-3. Train with on-the-fly augmentations, or load a checkpoint for evaluation.
-4. Identify the best (lowest validation loss) checkpoint and report gross AUPRC / AUROC on the test set using the official scorer.
+Set `TRAIN_MODE = False` and run all cells. The notebook loads the latest checkpoint of the selected model, uses its loss history to pick the epoch with the lowest validation loss, loads that checkpoint, and prints the test loss and gross AUROC / AUPRC. The shipped models have cached test scores, so this reproduces the results table above in seconds. If the cache is missing (or you delete it), the test set is scored from scratch, which requires the dataset.
 
-To **evaluate a pretrained model without training**, set `TRAIN_MODE = False`; the notebook loads the shipped checkpoints and reproduces the results table above.
+### Train a model
+
+1. Download the PhysioNet `training` folder into `data/training` (see [`data/README.md`](data/README.md)).
+2. Set `TRAIN_MODE = True` and run all cells. The notebook will:
+   - build `RECORDS.txt` manifests and preprocess/cache every recording to `.h5py` (once; later runs reuse the cache);
+   - split the records 60% train / 15% validation / 25% test. If the model folder already holds a `records.csv`, that split is reused, so retraining a shipped model uses exactly the paper's split; delete `records.csv` to draw a new one;
+   - train with on-the-fly augmentations and early stopping, saving `my_checkpoint_<epoch>.pth.tar` after every epoch;
+   - score the best (lowest validation loss) checkpoint on the test set with the official scorer and cache the result.
+
+Training from scratch overwrites the checkpoints in the model folder. To continue an interrupted run instead, set `LOAD_CHECKPOINT = True`. Without a CUDA GPU the notebook falls back to the CPU, which is fine for evaluation but impractically slow for training.
+
+### Custom configurations
+
+To try a new configuration, create `models/<name>/hyperparameters.txt` (copy an existing one) and set `MODEL_NAME = '<name>'`. The JSON keys are:
+
+| Key | Meaning |
+|-----|---------|
+| `ARCHITECTURE_NAME` | module in `architectures/` that defines `DeepSleepNet` (e.g. `architecture_v1`) |
+| `CHANNELS` | strictly increasing list of channel indices to use (0–12, see the channel table above) |
+| `Z_NORM` | per-channel Z-score normalization of each recording |
+| `LINEAR` | decoder upsampling: linear interpolation (`true`) or transposed convolution (`false`) |
+| `TRANSFORMS` | training augmentations, any of `MagScale`, `MagScaleRandCh`, `RandShuffle`, `AddRandGaussian2All`, `InjectRandGaussian`, `TimeScale` (see [`transforms.py`](transforms.py)) |
+| `LEARNING_RATE`, `DECAY_RATE` | Adam learning rate and weight decay |
+| `BATCH_SIZE`, `NUM_WORKERS`, `PIN_MEMORY` | DataLoader settings |
+| `MAX_NUM_EPOCHS`, `STOP_STRIP` | epoch limit and early-stopping patience (in epochs) |
+| `SEED`, `DEVICE` | random seed and device (`cuda`; falls back to `cpu` if no GPU is found) |
 
 ## Repository Structure
 
@@ -164,6 +186,8 @@ deepsleep2/
 ├── deep_sleep2.ipynb          # main notebook: preprocessing, training, evaluation
 ├── architectures/
 │   └── architecture_v1.py     # DeepSleepNet, the 1D U-Net
+├── dataset.py                 # CustomDataset reading the cached records
+├── transforms.py              # training augmentations (MagScale, RandShuffle, ...)
 ├── losses.py                  # masked BCE / BCE-with-logits losses
 ├── utils.py                   # PSG I/O, padding, Z-normalization, .h5py caching
 ├── score2018.py               # official PhysioNet 2018 AUPRC/AUROC scorer
