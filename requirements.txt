@@ -9,10 +9,8 @@ scipy>=1.9
 h5py>=3.7
 scikit-learn>=1.1
 
-# Data augmentation / visualization / progress
+# Plotting / progress bars
 matplotlib>=3.6
-seaborn>=0.12
-pandas>=1.5
 tqdm>=4.64
 
 # Model summary (maintained replacement for torchsummary)

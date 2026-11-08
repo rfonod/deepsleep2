@@ -153,3 +153,7 @@ dmypy.json
 *.arousal
 *.h5py
 RECORDS.txt
+data/training/
+data/test/
+data/RECORDS
+data/wget-log*

@@ -1,5 +1,5 @@
 # Exact frozen environment used for the DeepSleep 2.0 paper (Python 3.8, PyTorch 1.9).
-# Use this only to reproduce the published results bit-for-bit; for everyday use
+# Use this only to reproduce the published results with the original package versions; for everyday use
 # install the modern, slim stack in requirements.txt instead.
 #
 appnope==0.1.2
