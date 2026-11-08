@@ -4,26 +4,29 @@
 #script_name	: download_web.sh
 #description	: Downloads the '/training' and/or '/test' folders of the PhysioNet 2018 Challenge dataset from web: https://physionet.org/content/challenge-2018/1.0.0/
 #author			: Robert Fonod
-#version		: 1.0
-#usage			: bash download_web.sh | sh download_web.sh | ./download_web.sh
-#notes			: The script uses 'wget' in a pseudo-parallel fashion
+#version		: 1.1
+#usage			: bash data/download_web.sh (files are saved next to this script, i.e. in data/)
+#notes			: The script uses 'wget' in a pseudo-parallel fashion (one background job per record prefix tr03..tr14)
 #bash_version	: 3.2.57(1)-release
 ###################################################################
+
+# download into the folder containing this script (data/), wherever it is called from
+cd "$(dirname "$0")" || exit 1
 
 function download_training () {
   for i in {3..14} 
   do 
-    wget -r -N -np -b -nH --cut-dirs=3 -R "index.html*" -A "tr0$i*" https://physionet.org/files/challenge-2018/1.0.0/training/
+    wget -r -N -np -b -nH --cut-dirs=3 -R "index.html*" -A "$(printf 'tr%02d' "$i")*" https://physionet.org/files/challenge-2018/1.0.0/training/
   done
-  echo "Downloading (in the background) the 'training' folder ..."
+  echo "Downloading (in the background) the 'training' folder ... (progress: tail -f $(pwd)/wget-log*)"
 }
 
 function download_test () {
   for i in {3..14} 
   do 
-    wget -r -N -np -b -nH --cut-dirs=3 -R "index.html*" -A "te0$i*" https://physionet.org/files/challenge-2018/1.0.0/test/
+    wget -r -N -np -b -nH --cut-dirs=3 -R "index.html*" -A "$(printf 'te%02d' "$i")*" https://physionet.org/files/challenge-2018/1.0.0/test/
   done
-  echo "Downloading (in the background) the 'test' folder ..."
+  echo "Downloading (in the background) the 'test' folder ... (progress: tail -f $(pwd)/wget-log*)"
 }
 
 while true; do
@@ -45,7 +48,7 @@ while true; do
 done
 
 while true; do
-  read -p "Do you want to download the 'test' folder from PhysioNet (y/n)?" yn2
+  read -p "Do you want to download the 'test' folder from PhysioNet (y/n)? Note: it has no arousal labels and is not used by the notebook." yn2
   case $yn2 in
   
     [Yy]* ) 
