@@ -1,4 +1,4 @@
-# DeepSleep 2.0
+![DeepSleep 2.0: sleep arousal segmentation from full-night polysomnography](https://raw.githubusercontent.com/rfonod/deepsleep2/main/assets/deepsleep2_banner.png)
 
 [![GitHub Release](https://img.shields.io/github/v/release/rfonod/deepsleep2?include_prereleases)](https://github.com/rfonod/deepsleep2/releases) [![License](https://img.shields.io/github/license/rfonod/deepsleep2)](https://github.com/rfonod/deepsleep2/blob/main/LICENSE) [![GitHub Issues](https://img.shields.io/github/issues/rfonod/deepsleep2)](https://github.com/rfonod/deepsleep2/issues) [![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/) [![PyTorch](https://img.shields.io/badge/PyTorch-1.9%2B-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/) [![Open Access](https://img.shields.io/badge/Journal-10.3390%2Fai3010010-blue)](https://doi.org/10.3390/ai3010010) [![Archived Code](https://img.shields.io/badge/Zenodo-Software%20Archive-blue)](https://doi.org/10.5281/zenodo.13964321)
 
